@@ -4,6 +4,7 @@
 #include<conio.h>
 #include<unistd.h>
 #include<stdlib.h>
+FILE *BD;
 struct signup
 {
     char name[30];
@@ -13,9 +14,15 @@ struct signup
 struct login
 {
     char name[30];
-    long long int mno;
     char pass[10];
 }l;
+struct book
+{
+    char name[30];
+    long long int pno;
+    char add[30];
+    char model[30];
+}b;
 void S_password()
 {
     char c;
@@ -25,7 +32,7 @@ void S_password()
         c=getch();
         if(c==13)
         {
-            l.pass[i]='\0';
+            s.pass[i]='\0';
             break;
         }
         else if(c==8)
@@ -74,18 +81,11 @@ void L_password()
         }
     }
 }
-struct book
-{
-    char name[30];
-    long long int pno;
-    char add[30];
-    char model[30];
-}b;
 void invoice(char a[30],long long int b,char c[50],char d[30])
 {
                                                 system("cls");
-                                                printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-                                                printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+                                                printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                                                printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
 
                                                 printf("\n\n\t\t\t\t\tCustomer Invoice\n\t\t\t\t\t-----------------\n\n");
                                                 printf("\t\t _________________________________________________________\n");
@@ -100,13 +100,18 @@ void invoice(char a[30],long long int b,char c[50],char d[30])
                                                 printf("\t\t    Bike Model     : %s\n\n",d);
                                                 printf("\t\t|   Payment Status : Paid (Rs.10,000/-)                   |\n");
                                                 printf("\t\t|_________________________________________________________|\n");
+
+                                                BD=fopen("Buyer_Details.csv","a");
+                                                fprintf(BD,"%s,%lld,%s,%s,%s,%s\n",a,b,c,d,__DATE__,__TIME__);
+                                                fclose(BD);
+
                                                 printf("\n\tYou can proceed the remaining payment after receiving the bike to your address.");
 }
 void buyer_details()
 {
                                         system("cls");
-                                        printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-                                        printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+                                        printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                                        printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
                                         printf("\n\n\t\t\t\t\t    Buyer Form\n\t\t\t\t\t    ----------");
                                         fflush(stdin);
                                         printf("\n\n\tEnter the name          : ");
@@ -122,44 +127,56 @@ void buyer_details()
 void payment()
 {
     printf("\n\tPlease wait we are checking the payment\n\n");
-                                                char loading[15]={'L','o','a','d','i','n','g','.','.','.','.','.','.'};
+    char loading[15]={'L','o','a','d','i','n','g','.','.','.','.','.','.'};
 
-                                                for(int i=0;i<3;i++)
-                                                {
-                                                    printf("\r             \r");
-                                                    for(int j=0;j<=12;j++)
-                                                    {
-                                                        printf("%c",loading[j]);
-                                                        usleep(190000);
-                                                    }
-                                                }
-                                                printf("\n\n\t***** Payment Successfull *****");
+    for(int i=0;i<3;i++)
+    {
+    printf("\r             \r");
+    for(int j=0;j<=12;j++)
+    {
+        printf("%c",loading[j]);
+        usleep(190000);
+    }
+    }
+    printf("\n\n\t***** Payment Successfull *****");
 }
 int main()
 {
+    system("color 0E");
     char t;
+    int sno=0;
     char buy;
-    FILE *signup;
-    FILE *login;
-    strcpy(s.name,"Name");
-    strcpy(s.pass,"1234");
-    printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-    printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+    char *name,*pass;
+    FILE *sp;
     menu:
+    system("cls");
+    printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+    printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
     printf("\n\n\n\n\t   Menu\n\t   ----\n");
     printf("\t1) Sign-up\n\t2) Login\n\t3) Exit");
     printf("\n\n\tChoose an option to continue :");
     scanf(" %c",&t);
     switch(t)
     {
-        case '1': printf("\n\n\t\tSign-up\n\t\t-------\n");
-                printf("\n\tEnter your name    : ");
-                fflush(stdin);
-                gets(s.name);
-                printf("\tEnter Mobile number  :");
-                scanf("%lld",&s.mno);
-                printf("\tEnter your password  :");
-                S_password();
+        case '1':   system("cls");
+                    printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                    printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
+                    printf("\n\n\t\tSign-up\n\t\t-------\n");
+                sp=fopen("signup.csv","a");
+                if(sp == NULL)
+                {
+                    printf("File is Null\n");
+                    fprintf(sp,"Name,Pno.Number,Password");
+                }
+                    printf("\tEnter the name : ");
+                    fflush(stdin);
+                    gets(s.name);
+                    printf("\n\tEnter the phone number : ");
+                    scanf("%lld",&s.mno);
+                    printf("\n\tEnter the password : ");
+                    S_password();
+                    fprintf(sp,"%s,%lld,%s,\n",s.name,s.mno,s.pass);
+                    fclose(sp);
                 printf("\n\n\t********** Sign-up Successfull **********\n\n");
                 printf("\tPress 1 to Login.....");
                 scanf(" %c",&t);
@@ -169,32 +186,58 @@ int main()
                     goto menu;
                 break;
         case '2': Login:
+                system("cls");
+                printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
                 printf("\n\n\t\tLogin\n\t\t-----\n");
                 printf("\n\tEnter your name      :");
                 fflush(stdin);
                 gets(l.name);
                 printf("\tEnter your password  :");
                 L_password();
-                if((strcmp(s.name,l.name)==0)&&(strcmp(s.pass,l.pass)==0))
+
+                int buffer[1000];
+                sp = fopen("signup.csv","r");
+                if(sp == NULL)
+                {
+                    perror("Error opening file");
+                    return 1;
+                }
+                while(fgets(buffer,sizeof(buffer),sp)!=NULL)
+                {
+                    name=strtok(buffer,",");
+                    pass=strtok(NULL,",");
+                    pass=strtok(NULL,",");
+                    if(strcmp(name,l.name)==0 && strcmp(pass,l.pass)==0)
+                       {
+                           break;
+                       }
+                }
+                fclose(sp);
+                if(strcmp(name,l.name)==0 && strcmp(pass,l.pass)==0)
                 {
                     goto home;
                 }
                 else
                 {
-                    printf("\n\tIncorrect password or User name......! try again..\n");
-                    goto Login;
+                    printf("\n\n\tIncorrect username or password.........!\n\n\tNew User? press 1 : ");
+                    scanf("%c",&t);
+                    if(t=='1')
+                        goto menu;
+                    else
+                        goto Login;
                 }
+
+
                 break;
         case '3': exit(1);
         default:printf("\n\tIncorrect option......! try again..\n");
                 goto menu;
-                ending:
-                    break;
     }
     home:
         system("cls");
-        printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-        printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+        printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+        printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
         printf("\n\n\t***** Top Brands *****\n");
         printf("\n\t1) Royal Enfield\t4) Hero\n\t2) Kawasaki\t\t5) Honda\n\t3) BMW\t\t\t6) Suziki\n\n");
         printf("\tPlease select your Brand : ");
@@ -204,8 +247,8 @@ int main()
         case '1':
                 RE:
                 system("cls");
-                printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-                printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+                printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
 
                 printf("\n\n\t\t\t\t******* Selected Royal Enfield *******");
                 printf("\n\n\t***** Categories *****\n");
@@ -597,6 +640,7 @@ int main()
                                                 getch();
 
                                                 invoice(b.name,b.pno,b.add,b.model);
+
                                                 printf("\n\n\t if you want to search another bike press 1 : ");
                                                 scanf(" %c",&t);
                                                 if(t=='1')
@@ -722,8 +766,8 @@ int main()
         case '2':
                 Ka:
                 system("cls");
-                printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-                printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+                printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
 
                 printf("\n\n\t\t\t\t***** Selected Kawasaki *****");
                 printf("\n\n\t***** Categories *****\n");
@@ -1236,8 +1280,8 @@ int main()
         case '3':
                 bmw:
                 system("cls");
-                printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-                printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+                printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
 
                 printf("\n\n\t\t\t\t***** Selected BMW *****");
                 printf("\n\n\t***** Categories *****\n");
@@ -1830,8 +1874,8 @@ int main()
         case '4':
                 hero:
                 system("cls");
-                printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-                printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+                printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
 
                 printf("\n\n\t\t\t\t***** Selected Hero *****");
                 printf("\n\n\t***** Categories *****\n");
@@ -2262,8 +2306,8 @@ int main()
         case '5':
                 honda:
                 system("cls");
-                printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-                printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+                printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
 
                 printf("\n\n\t\t\t\t***** Selected Honda *****");
                 printf("\n\n\t***** Categories *****\n");
@@ -2856,8 +2900,8 @@ int main()
         case '6':
                 suzuki:
                 system("cls");
-                printf("\n\t\t\t\t\t             \\\n\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t     (o)     (o)");
-                printf("\n\t\t\t*************** Welcome to Dream Bikes ***************");
+                printf("\n\t\t\t\t\t\t             \\\n\t\t\t\t\t\t       \\_____/\\\n\t\t\t\t\t\t      _//   \\\\_\n\t\t\t\t\t\t     (o)     (o)");
+                printf("\n\t\t\t\t*************** Welcome to Dream Bikes ***************");
 
                 printf("\n\n\t\t\t\t***** Suzuki *****");
                 printf("\n\n\t***** Categories *****\n");
@@ -3521,7 +3565,7 @@ int main()
                             default:printf("\n\n\tinvalid option.....!try again...");
                                     goto suzuki_cruz;
                             }
-                }break;
+                }
         }
-return 0;
+        return 0;
 }
